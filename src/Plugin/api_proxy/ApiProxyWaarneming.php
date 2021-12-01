@@ -208,6 +208,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         // Determine full path to local file.
         $image_path = $_SERVER["DOCUMENT_ROOT"] . $image_path;
       }
+
       // Replace the body option with a multipart option.
       $contents = fopen($image_path, 'r');
       if (!$contents) {
@@ -245,10 +246,18 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
     foreach ($classification['predictions'] as $i => $prediction) {
       // Find predictions above the threshold.
       if ($prediction['probability'] >= $this->configuration['classify']['threshold']) {
-        $species = $classification['species'][$i];
         if (isset($this->configuration['classify']['groups'])) {
+          // Find the species record matching the prediction
+          // (The two arrays are not in the same order.)
+          $found = FALSE;
+          foreach ($classification['species'] as $species) {
+            if ($species['scientific_name'] == $prediction['taxon']['name']) {
+              $found = TRUE;
+              break;
+            }
+          }
           // Skip predictions not in specified groups.
-          if (!in_array($species['group'], $this->configuration['classify']['groups'])) {
+          if (!$found || !in_array($species['group'], $this->configuration['classify']['groups'])) {
             continue;
           }
         }
