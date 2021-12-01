@@ -289,11 +289,11 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
           }
         }
 
-        // Add prediction to results.
         $data[] = [
-          'classifier_id' => $species['id'],
-          'classifier_name' => $species['scientific_name'],
+          'classifier_id' => $prediction['taxon']['id'],
+          'classifier_name' => $prediction['taxon']['name'],
           'probability' => $prediction['probability'],
+          'group' => $species['group'],
           'preferred_name' => $preferred_name,
           'taxa_taxon_list_id' => $ttl_id,
         ];
