@@ -119,7 +119,6 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
     return $form;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -162,14 +161,50 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
   public function preprocessOutgoingRequestOptions(array $options): array {
     $postargs = [];
 
-    // api_proxy just handles POST data as a single body item.
+    // api_proxy module just handles POST data as a single body item.
     // https://docs.guzzlephp.org/en/6.5/request-options.html#body
     // We have to post the image file content to waarneming as
     // multipart/form-data.
     parse_str($options['body'], $postargs);
     if (isset($postargs['image'])) {
       $image_path = $postargs['image'];
-      if (substr($image_path, 0, 4) !== 'http') {
+      if (substr($image_path, 0, 4) == 'http') {
+        // The image has to be obtained from a url.
+        // Do a head request to determine the content-type.
+        $handle = curl_init($image_path);
+        curl_setopt($handle, CURLOPT_NOBODY, TRUE);
+        curl_exec($handle);
+        $content_type = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
+        curl_close($handle);
+
+        // Open an interim file.
+        $download_path = \data_entry_helper::getInterimImageFolder('fullpath');
+        $download_path .= uniqid('api_proxy_waarneming_');
+        switch ($content_type) {
+          case 'image/png':
+            $download_path .= '.png';
+            break;
+
+          case 'image/jpeg':
+            $download_path .= '.jpg';
+            break;
+
+          default:
+            throw new \InvalidArgumentException("Unhandled content type: $content_type.");
+        }
+
+        // Download image to interim file.
+        $fp = fopen($download_path, 'w+');
+        $handle = curl_init($image_path);
+        curl_setopt($handle, CURLOPT_TIMEOUT, 50);
+        curl_setopt($handle, CURLOPT_FILE, $fp);
+        curl_exec($handle);
+        curl_close($handle);
+        fclose($fp);
+        $image_path = $download_path;
+      }
+      else {
+        // The image is store locally
         // Determine full path to local file.
         $image_path = $_SERVER["DOCUMENT_ROOT"] . $image_path;
       }
