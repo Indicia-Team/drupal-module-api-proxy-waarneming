@@ -284,7 +284,10 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
               // Results are returned in priority order. Going to assume the
               // first is the correct match for now.
               $warehouse_data = [
-                'preferred_name' => $taxa[0]['taxon'],
+                'taxon' => $taxa[0]['taxon'],
+                'preferred_taxon' => $taxa[0]['preferred_taxon'],
+                'authority' => $taxa[0]['authority'],
+                'default_common_name' => $taxa[0]['default_common_name'],
                 'taxa_taxon_list_id' => $taxa[0]['taxa_taxon_list_id'],
                 'taxon_meaning_id' => $taxa[0]['taxon_meaning_id'],
               ];

@@ -77,17 +77,19 @@ The groups are defined at https://waarneming.nl/api/v1/species-groups/
 
 ```
 [
-    {
-        "classifier_id": "1641@WRN",
-        "classifier_name": "Mimas tiliae",
-        "probability": 0.999816358089447,
-        "group": 8,
-        "preferred_name": "Mimas tiliae",
-        "taxa_taxon_list_id": "457162",
-        "taxon_meaning_id": "218594"
-    }
-]
-```
-The preferred_name, taxa_taxon_list_id, and taxon_meaning_id come from the 
-indicia warehouse lookup. They are absent if no look up is required or there is
-an error in the warehouse response.
+	{
+		"classifier_id": "1641@WRN",
+		"classifier_name": "Mimas tiliae",
+		"probability": 0.5,
+		"group": 8,
+		"taxon": "Mimas tiliae",
+		"preferred_taxon": "Mimas tiliae",
+		"authority": "(LINNAEUS, 1758)",
+		"default_common_name": "Lime Hawk Moth",
+		"taxa_taxon_list_id": "457162",
+		"taxon_meaning_id": "218594"
+	}
+]```
+The taxon, preferred_taxon, authority, default_common_name, taxa_taxon_list_id,
+and taxon_meaning_id come from the indicia warehouse lookup. They are absent if
+no look up is required or there is an error in the warehouse response.
