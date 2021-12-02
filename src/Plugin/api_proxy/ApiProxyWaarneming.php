@@ -204,9 +204,10 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         $image_path = $download_path;
       }
       else {
-        // The image is store locally
+        // The image is stored locally
         // Determine full path to local file.
-        $image_path = $_SERVER["DOCUMENT_ROOT"] . $image_path;
+        $image_path =
+          \data_entry_helper::getInterimImageFolder('fullpath') . $image_path;
       }
 
       // Replace the body option with a multipart option.
@@ -289,6 +290,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
           }
         }
 
+        // Add prediction to results.
         $data[] = [
           'classifier_id' => $prediction['taxon']['id'],
           'classifier_name' => $prediction['taxon']['name'],

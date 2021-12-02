@@ -9,10 +9,16 @@ response, and appending taxa information from the Indicia warehouse.
 
 ## Configuration
 After installing the module and its dependencies go to Configuration > Web 
-services > API Proxy.
+services > API Proxy and select the Settings tab.
 
-On the settings tab, in the Authentication section, add the client ID, email and
-password that you will have set up which allow you to access the Waarneming API.
+
+Even if you are going to call the module from the Drupal site hosting the
+module, you will have to add the domain of your client in the CORS settings.
+Failing to do so results in a 400 Bad Request error. We better tick the box to
+enable POST requests too
+
+In the Authentication section, add the client ID, email and password that you
+will have set up which allow you to access the Waarneming API.
 
 The Classification section allows you to adjust the response sent by the proxy
 from a request to the image classifier. When sent an image, the Waarneming API
@@ -29,6 +35,13 @@ the species names from the classifier to the warehouse and looks them up in a
 species list which you can specify in the Inidicia Lookup section. It obtains
 the preferred name and taxa_taxon_list_id.
 
+## Permissions
+Go to Configuration > People > Permissions and find the section for the API
+Proxy. A new permission has been added for using the Waarneming API. Initially,
+it is only allowed to the Administrator role. Check the roles who should be
+allowed access to the API. If you are not granted permission you will receive a
+403 Forbidden response.
+
 ## Requests
 To make a request to the image classifier, send a POST request to 
 `api-proxy/waarneming` relative to the Drupal site hosting the module. To retain
@@ -39,9 +52,10 @@ classifier is `identify-proxy/v1/?app_name=uni-jena`. I.e the full url to post
 to the image classifier is `https://<your domain>/api-proxy/waarneming?_api_proxy_uri=identify-proxy%2Fv1%2F%3Fapp_name%3Duni-jena`
 
 The body of the POST must contain an element with key, `image` and a value which
-is a path to an image file. It can be a path, relative to the webroot, of a file
-on the Drupal server, or a url to a web-accessible image. Send it as
-x-www-form-urlencoded.
+locates an image file. It can be 
+* the name of a file uploaded to the interim image folder on the Drupal server,
+* a url to a web-accessible image.
+Send it as x-www-form-urlencoded.
 
 An example implementation of calling the service using JavaScript and JQuery
 from a page of the Drupal website looks as follows:
