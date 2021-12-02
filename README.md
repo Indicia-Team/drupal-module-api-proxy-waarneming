@@ -88,3 +88,6 @@ The groups are defined at https://waarneming.nl/api/v1/species-groups/
     }
 ]
 ```
+The preferred_name, taxa_taxon_list_id, and taxon_meaning_id come from the 
+indicia warehouse lookup. They are absent if no look up is required or there is
+an error in the warehouse response.
