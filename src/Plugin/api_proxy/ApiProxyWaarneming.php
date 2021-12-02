@@ -265,6 +265,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
 
         $preferred_name = '';
         $ttl_id = 0;
+        $meaning_id = 0;
         if (isset($this->configuration['indicia']['taxon_list_id'])) {
           // Perform lookup in Indicia species list.
           $getargs = [
@@ -286,6 +287,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
               // first is the correct match for now.
               $preferred_name = $taxa[0]['taxon'];
               $ttl_id = $taxa[0]['taxa_taxon_list_id'];
+              $meaning_id = $taxa[0]['taxon_meaning_id'];
             }
           }
         }
@@ -298,6 +300,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
           'group' => $species['group'],
           'preferred_name' => $preferred_name,
           'taxa_taxon_list_id' => $ttl_id,
+          'taxon_meaning_id' => $meaning_id,
         ];
 
         // Exit loop if we have got enough suggestions.

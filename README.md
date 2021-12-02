@@ -83,7 +83,8 @@ The groups are defined at https://waarneming.nl/api/v1/species-groups/
         "probability": 0.999816358089447,
         "group": 8,
         "preferred_name": "Mimas tiliae",
-        "taxa_taxon_list_id": "457162"
+        "taxa_taxon_list_id": "457162",
+        "taxon_meaning_id": "218594"
     }
 ]
 ```
