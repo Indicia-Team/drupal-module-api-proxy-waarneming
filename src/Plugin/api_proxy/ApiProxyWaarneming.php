@@ -285,8 +285,11 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
               // first is the correct match for now.
               $warehouse_data = [
                 'taxon' => $taxa[0]['taxon'],
-                'preferred_taxon' => $taxa[0]['preferred_taxon'],
                 'authority' => $taxa[0]['authority'],
+                'language_iso' => $taxa[0]['language_iso'],
+                'preferred' => $taxa[0]['preferred'],
+                'preferred_taxon' => $taxa[0]['preferred_taxon'],
+                'preferred_authority' => $taxa[0]['preferred_authority'],
                 'default_common_name' => $taxa[0]['default_common_name'],
                 'taxa_taxon_list_id' => $taxa[0]['taxa_taxon_list_id'],
                 'taxon_meaning_id' => $taxa[0]['taxon_meaning_id'],
