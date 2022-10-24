@@ -6,7 +6,7 @@ use Drupal\api_proxy\Plugin\api_proxy\HttpApiCommonConfigs;
 use Drupal\api_proxy\Plugin\HttpApiPluginBase;
 use Drupal\Core\Form\SubformStateInterface;
 use Symfony\Component\HttpFoundation\Response;
-use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Utils;
 
 iform_load_helpers(['data_entry_helper']);
 
@@ -131,7 +131,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
     // the post we will make rather than the one we received.
     // Remove origin otherwise we get a 404 response (possibly because CORS is
     // not supported).
-    $headers = Psr7\_caseless_remove(
+    $headers = Utils::caselessRemove(
       ['Content-Type', 'content-length', 'origin'], $headers
     );
 
