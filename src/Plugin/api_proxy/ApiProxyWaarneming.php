@@ -270,7 +270,6 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
             'searchQuery' => $species['scientific_name'],
             'taxon_list_id' => $this->configuration['indicia']['taxon_list_id'],
             'language' => 'lat',
-            'preferred' => TRUE,
           ] + $readAuth;
           $url = $connection['base_url'] . 'index.php/services/data/taxa_search?';
           $url .= http_build_query($getargs);
@@ -286,12 +285,13 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
               $warehouse_data = [
                 'taxon' => $taxa[0]['taxon'],
                 'authority' => $taxa[0]['authority'],
+                'taxa_taxon_list_id' => $taxa[0]['taxa_taxon_list_id'],
                 'language_iso' => $taxa[0]['language_iso'],
                 'preferred' => $taxa[0]['preferred'],
                 'preferred_taxon' => $taxa[0]['preferred_taxon'],
                 'preferred_authority' => $taxa[0]['preferred_authority'],
+                'preferred_taxa_taxon_list_id' => $taxa[0]['preferred_taxa_taxon_list_id'],
                 'default_common_name' => $taxa[0]['default_common_name'],
-                'taxa_taxon_list_id' => $taxa[0]['taxa_taxon_list_id'],
                 'taxon_meaning_id' => $taxa[0]['taxon_meaning_id'],
               ];
             }
