@@ -78,23 +78,26 @@ The groups are defined at https://waarneming.nl/api/v1/species-groups/
 ```
 [
   {
-    "classifier_id": "1641@WRN",
+    "classifier_id": "1641",
     "classifier_name": "Mimas tiliae",
     "probability": 0.999816358089447,
     "group": 8,
     "taxon": "Mimas tiliae",
-    "authority": "(LINNAEUS, 1758)",
+    "authority": "(Linnaeus, 1758)",
+    "taxa_taxon_list_id": "257439",
     "language_iso": "lat",
     "preferred": "t",
     "preferred_taxon": "Mimas tiliae",
-    "preferred_authority": "(LINNAEUS, 1758)",
-    "default_common_name": "Lindenschwärmer",
-    "taxa_taxon_list_id": "457162",
-    "taxon_meaning_id": "218594"
+    "preferred_authority": "(Linnaeus, 1758)",
+    "preferred_taxa_taxon_list_id": "257439",
+    "default_common_name": "Lime Hawk-moth",
+    "taxon_meaning_id": "109104"
   }
 ]
 ```
 The classifier_id, classifier_name, probability, and group come from the 
 Waarneming API. The other fields are from the indicia warehouse lookup. The
 latter are absent if no look up is required or there is an error in the
-warehouse response.
+warehouse response. For example, if the classifer returns a taxon name which
+cannot be matched to a name in the Indicia species list then the Indicia fields
+will be absent.
