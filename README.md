@@ -68,6 +68,36 @@ from a page of the Drupal website looks as follows:
   };
   return jQuery.post(url.href, data);
 ```
+The body of the POST may contain any number of elements with the key,
+`groups[]`, each with an integer value corresponding to a taxonomic group used
+by the classifer. This can be used instead of, and overrides, the configuration
+entry for limiting results to certain groups. The possible values are as 
+follows.
+
+| Value | Group                                           |
+|-------|-------------------------------------------------|
+|    0  | Allow all results                               |
+|    1  | Birds                                           |
+|    2  | Mammals                                         |
+|    9  | Fish                                            |
+|    3  | Reptiles and Amphibians                         |
+|    4  | Butterflies                                     |
+|    8  | Moths                                           |
+|    5  | Dragonflies                                     |
+|   14  | Locusts and Crickets (Orthoptera)               |
+|   15  | Bugs, Plant Lice and Cicadas                    |
+|   16  | Beetles                                         |
+|   17  | Hymenoptera                                     |
+|   18  | Diptera                                         |
+|    6  | Insects (other)                                 |
+|   13  | Other Arthropods (Arthropoda)                   |
+|    7  | Molluscs                                        |
+|   20  | Other Invertebrates                             |
+|   10  | Plants                                          |
+|   12  | Mosses and Lichens                              |
+|   19  | Algae, Seaweeds and other unicellular organisms |
+|   11  | Fungi                                           |
+|   30  | Disturbances                                    |
 
 # Response
 The response is an array of suggested identifications. If no species match the
