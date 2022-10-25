@@ -36,13 +36,15 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         '#type' => 'textfield',
         '#title' => $this->t('Client ID'),
         '#default_value' => $this->configuration['auth']['client_id'],
-        '#description' => $this->t('An ID provided by the API administrators granting access.'),
+        '#description' => $this->t('An ID provided by the API administrators
+        granting access.'),
       ],
       'email' => [
         '#type' => 'textfield',
         '#title' => $this->t('Email'),
         '#default_value' => $this->configuration['auth']['email'],
-        '#description' => $this->t('Email address of an account on https://observation.org used for authentication.'),
+        '#description' => $this->t('Email address of an account on
+        https://observation.org used for authentication.'),
       ],
       'password' => [
         '#type' => 'textfield',
@@ -60,7 +62,8 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         '#title' => $this->t('Probability threshold'),
         '#default_value' => $this->configuration['classify']['threshold'] ?? 0.5,
         '#required' => TRUE,
-        '#description' => $this->t('Threshold of classification probability, below which responses are ignored (0.0 to 1.0).'),
+        '#description' => $this->t('Threshold of classification probability,
+        below which responses are ignored (0.0 to 1.0).'),
       ],
       'groups' => [
         '#type' => 'select',
@@ -90,16 +93,17 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
           30 => 'Disturbances',
         ],
         '#default_value' => $this->configuration['classify']['groups'],
-        '#description' => $this->t('List of species groups to which results are constrained.'),
+        '#description' => $this->t('List of species groups to which results are
+        constrained.'),
       ],
       'suggestions' => [
         '#type' => 'textfield',
         '#title' => $this->t('Maximum number of suggestions'),
         '#default_value' => $this->configuration['classify']['suggestions'] ?? 1,
-        '#description' => $this->t('The maximum number of classification suggestions to be returned.
-        Note, the number of suggestions also depends on the probability threshold.
-        If the threshold is >= 0.5, there can only be one suggestion as the 
-        sum of probabilities is 1.0.'),
+        '#description' => $this->t('The maximum number of classification
+        suggestions to be returned. Note, the number of suggestions also depends
+        on the probability threshold. If the threshold is >= 0.5, there can only
+        be one suggestion as the sum of probabilities is 1.0.'),
       ],
     ];
     $form['indicia'] = [
