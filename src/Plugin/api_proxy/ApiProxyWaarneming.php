@@ -101,8 +101,8 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         ],
         '#default_value' => $this->configuration['classify']['groups'],
         '#description' => $this->t('Default list of species groups to which
-        results are constrained. This can be overridden in the POST data. Use 
-        <ctrl> key to select or deselect multiple items.'),
+        results are constrained. This can be overridden in the POST data. Hold 
+        down the &lt;ctrl&gt; key to select or deselect multiple items.'),
       ],
       'suggestions' => [
         '#type' => 'textfield',
