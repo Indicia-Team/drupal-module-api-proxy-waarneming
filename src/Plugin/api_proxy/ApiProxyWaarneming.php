@@ -6,7 +6,7 @@ use Drupal\api_proxy\Plugin\api_proxy\HttpApiCommonConfigs;
 use Drupal\api_proxy\Plugin\HttpApiPluginBase;
 use Drupal\Core\Form\SubformStateInterface;
 use Symfony\Component\HttpFoundation\Response;
-use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Utils;
 
 iform_load_helpers(['data_entry_helper']);
 
@@ -25,6 +25,13 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
   use HttpApiCommonConfigs;
 
   /**
+   * Array of species groups to constrain output to.
+   *
+   * @var int[]
+   */
+  private $groups;
+
+  /**
    * {@inheritdoc}
    */
   public function addMoreConfigurationFormElements(array $form, SubformStateInterface $form_state): array {
@@ -36,13 +43,15 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         '#type' => 'textfield',
         '#title' => $this->t('Client ID'),
         '#default_value' => $this->configuration['auth']['client_id'],
-        '#description' => $this->t('An ID provided by the API administrators granting access.'),
+        '#description' => $this->t('An ID provided by the API administrators
+        granting access.'),
       ],
       'email' => [
         '#type' => 'textfield',
         '#title' => $this->t('Email'),
         '#default_value' => $this->configuration['auth']['email'],
-        '#description' => $this->t('Email address of an account on https://observation.org used for authentication.'),
+        '#description' => $this->t('Email address of an account on
+        https://observation.org used for authentication.'),
       ],
       'password' => [
         '#type' => 'textfield',
@@ -60,7 +69,8 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         '#title' => $this->t('Probability threshold'),
         '#default_value' => $this->configuration['classify']['threshold'] ?? 0.5,
         '#required' => TRUE,
-        '#description' => $this->t('Threshold of classification probability, below which responses are ignored (0.0 to 1.0).'),
+        '#description' => $this->t('Threshold of classification probability,
+        below which responses are ignored (0.0 to 1.0).'),
       ],
       'groups' => [
         '#type' => 'select',
@@ -90,16 +100,18 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
           30 => 'Disturbances',
         ],
         '#default_value' => $this->configuration['classify']['groups'],
-        '#description' => $this->t('List of species groups to which results are constrained.'),
+        '#description' => $this->t('Default list of species groups to which
+        results are constrained. This can be overridden in the POST data. Use 
+        <ctrl> key to select or deselect multiple items.'),
       ],
       'suggestions' => [
         '#type' => 'textfield',
         '#title' => $this->t('Maximum number of suggestions'),
         '#default_value' => $this->configuration['classify']['suggestions'] ?? 1,
-        '#description' => $this->t('The maximum number of classification suggestions to be returned.
-        Note, the number of suggestions also depends on the probability threshold.
-        If the threshold is >= 0.5, there can only be one suggestion as the 
-        sum of probabilities is 1.0.'),
+        '#description' => $this->t('The maximum number of classification
+        suggestions to be returned. Note, the number of suggestions also depends
+        on the probability threshold. If the threshold is >= 0.5, there can only
+        be one suggestion as the sum of probabilities is 1.0.'),
       ],
     ];
     $form['indicia'] = [
@@ -131,7 +143,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
     // the post we will make rather than the one we received.
     // Remove origin otherwise we get a 404 response (possibly because CORS is
     // not supported).
-    $headers = Psr7\_caseless_remove(
+    $headers = Utils::caselessRemove(
       ['Content-Type', 'content-length', 'origin'], $headers
     );
 
@@ -163,9 +175,23 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
 
     // api_proxy module just handles POST data as a single body item.
     // https://docs.guzzlephp.org/en/6.5/request-options.html#body
+    parse_str($options['body'], $postargs);
+
+    // If taxon groups are included in the post data then override the default
+    // settings provided in configuration.
+    if (isset($postargs['groups'])) {
+      if (!in_array(0, $postargs['groups'])) {
+        // The special value of 0 permits results from any group by leaving the
+        // groups property empty.
+        $this->groups = $postargs['groups'];
+      }
+    }
+    elseif (isset($this->configuration['classify']['groups'])) {
+      $this->groups = $this->configuration['classify']['groups'];
+    }
+
     // We have to post the image file content to waarneming as
     // multipart/form-data.
-    parse_str($options['body'], $postargs);
     if (isset($postargs['image'])) {
       $image_path = $postargs['image'];
       if (substr($image_path, 0, 4) == 'http') {
@@ -247,18 +273,25 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
     foreach ($classification['predictions'] as $i => $prediction) {
       // Find predictions above the threshold.
       if ($prediction['probability'] >= $this->configuration['classify']['threshold']) {
-        if (isset($this->configuration['classify']['groups'])) {
-          // Find the species record matching the prediction
-          // (The two arrays are not in the same order.)
-          $found = FALSE;
-          foreach ($classification['species'] as $species) {
-            if ($species['scientific_name'] == $prediction['taxon']['name']) {
-              $found = TRUE;
-              break;
-            }
+        // Find the species record matching the prediction
+        // (The two arrays are not in the same order.)
+        $found = FALSE;
+        foreach ($classification['species'] as $species) {
+          if ($species['scientific_name'] == $prediction['taxon']['name']) {
+            $found = TRUE;
+            break;
           }
-          // Skip predictions not in specified groups.
-          if (!$found || !in_array($species['group'], $this->configuration['classify']['groups'])) {
+        }
+
+        if (!$found) {
+          // Skip to next prediction in this unlikely scenario.
+          continue;
+        }
+
+        if (!empty($this->groups)) {
+          // Exclude predictions not in selected groups.
+          if (!in_array($species['group'], $this->groups)) {
+            // Skip to next prediction.
             continue;
           }
         }
