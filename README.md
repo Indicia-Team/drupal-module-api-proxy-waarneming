@@ -3,9 +3,12 @@
 A plugin for the [API Proxy](https://www.drupal.org/project/api_proxy) module.
 
 It adds authentication for calls to the 
-[Waarneming API](https://waarneming.nl/api/docs) In particular, it is intended 
-for accessing the image classifier, providing filters for the
+[Waarneming API](https://waarneming.nl/api/v1/docs/) In particular, it is 
+intended for accessing the image classifier, providing filters for the
 response, and appending taxa information from the Indicia warehouse.
+
+The Waarneming API is, in turn, providing a proxy service to the [Nature
+Identification API](https://identify.biodiversityanalysis.nl/)
 
 ## Configuration
 After installing the module and its dependencies go to Configuration > Web 
@@ -72,7 +75,7 @@ The body of the POST may contain any number of elements with the key,
 `groups[]`, each with an integer value corresponding to a taxonomic group used
 by the classifer. This can be used instead of, and overrides, the configuration
 entry for limiting results to certain groups. The possible values are as 
-follows.
+follows, copied from https://waarneming.nl/api/v1/species-groups/.
 
 | Value | Group                                           |
 |-------|-------------------------------------------------|
@@ -103,7 +106,6 @@ follows.
 The response is an array of suggested identifications. If no species match the
 criteria the array will be empty. A good match will return a single record as in
 the following example.
-The groups are defined at https://waarneming.nl/api/v1/species-groups/
 
 ```
 [
