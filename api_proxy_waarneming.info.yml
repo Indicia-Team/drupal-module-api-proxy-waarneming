@@ -1,10 +1,10 @@
 name: Waarneming API Proxy
 description: A proxy adding authentication for calls to the Waarneming API.
 core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10
 package: "Indicia"
 type: module
-version: "1.1.0"
+version: "1.2.0"
 dependencies:
   - api_proxy
   - iform
