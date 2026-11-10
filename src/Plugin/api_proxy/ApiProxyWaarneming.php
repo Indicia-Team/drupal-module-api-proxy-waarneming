@@ -5,8 +5,8 @@ namespace Drupal\api_proxy_waarneming\Plugin\api_proxy;
 use Drupal\api_proxy\Plugin\api_proxy\HttpApiCommonConfigs;
 use Drupal\api_proxy\Plugin\HttpApiPluginBase;
 use Drupal\Core\Form\SubformStateInterface;
-use Symfony\Component\HttpFoundation\Response;
 use GuzzleHttp\Psr7\Utils;
+use Symfony\Component\HttpFoundation\Response;
 
 iform_load_helpers(['data_entry_helper']);
 
@@ -136,7 +136,6 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
    */
   protected function calculateHeaders(array $headers): array {
     // Modify & add new headers.
-
     // Call the parent function to apply settings from the config page.
     $headers = parent::calculateHeaders($headers);
     // Remove content-type and content-length to ensure it is set correctly for
@@ -161,7 +160,6 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
       $tokens = json_decode($tokens, TRUE);
       $headers['authorization'] = ['Bearer ' . $tokens['access_token']];
     }
-    curl_close($handle);
 
     // @todo cache tokens for their lifetime.
     return $headers;
@@ -201,7 +199,6 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         curl_setopt($handle, CURLOPT_NOBODY, TRUE);
         curl_exec($handle);
         $content_type = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
-        curl_close($handle);
 
         // Open an interim file.
         $download_path = \data_entry_helper::getInterimImageFolder('fullpath');
@@ -225,7 +222,6 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         curl_setopt($handle, CURLOPT_TIMEOUT, 50);
         curl_setopt($handle, CURLOPT_FILE, $fp);
         curl_exec($handle);
-        curl_close($handle);
         fclose($fp);
         $image_path = $download_path;
       }
@@ -265,7 +261,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
     if (
       isset($options['version']) &&
       substr($options['version'], 0, 5) == 'HTTP/'
-    )  {
+    ) {
       $options['version'] = substr($options['version'], 5);
     }
 
@@ -277,16 +273,15 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
    */
   public function postprocessOutgoing(Response $response): Response {
     // Modify the response from the API.
-
     $classification = json_decode($response->getContent(), TRUE);
 
-    $connection = iform_get_connection_details(null);
+    $connection = iform_get_connection_details(NULL);
     $readAuth = \data_entry_helper::get_read_auth(
       $connection['website_id'], $connection['password']
     );
 
     $data = [];
-    foreach ($classification['predictions'] as $i => $prediction) {
+    foreach ($classification['predictions'] as $prediction) {
       // Find predictions above the threshold.
       if ($prediction['probability'] >= $this->configuration['classify']['threshold']) {
         // Find the species record matching the prediction
