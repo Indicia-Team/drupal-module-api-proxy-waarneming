@@ -29,7 +29,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
    *
    * @var int[]
    */
-  private $groups;
+  protected $groups;
 
   /**
    * {@inheritdoc}
@@ -101,7 +101,7 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
         ],
         '#default_value' => $this->configuration['classify']['groups'],
         '#description' => $this->t('Default list of species groups to which
-        results are constrained. This can be overridden in the POST data. Hold 
+        results are constrained. This can be overridden in the POST data. Hold
         down the &lt;ctrl&gt; key to select or deselect multiple items.'),
       ],
       'suggestions' => [
@@ -254,21 +254,21 @@ final class ApiProxyWaarneming extends HttpApiPluginBase {
       parameter holding the location of the image to classify.');
     }
 
-    // Fix problem where $options['version'] is like HTTP/x.y, as set in 
+    // Fix problem where $options['version'] is like HTTP/x.y, as set in
     // $_SERVER['SERVER_PROTOCOL'], but Guzzle expects just x.y.
     // PHP docs https://www.php.net/manual/en/reserved.variables.server.php
     // Guzzle https://docs.guzzlephp.org/en/stable/request-options.html#version
-    // This problem only became evident with extra error checking added in 
+    // This problem only became evident with extra error checking added in
     // Guzzle 7.9 to which we upgraded on 23/7/2024.
     // I have raised https://www.drupal.org/project/api_proxy/issues/3463730
     // When it is fixed we can remove this code.
     if (
-      isset($options['version']) && 
+      isset($options['version']) &&
       substr($options['version'], 0, 5) == 'HTTP/'
     )  {
       $options['version'] = substr($options['version'], 5);
     }
-  
+
     return $options;
   }
 
